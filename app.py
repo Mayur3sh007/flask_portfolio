@@ -7,15 +7,16 @@ from groq import Groq
 import uuid
 import logging
 from elevenlabs import ElevenLabs,VoiceSettings
+import tempfile
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 # Configure server-side sessions (only for start/end of chat)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_FILE_DIR'] = './flask_session/'
+app.config['SESSION_FILE_DIR'] = tempfile.mkdtemp()
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 Session(app)
@@ -157,4 +158,5 @@ def end_session():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+
